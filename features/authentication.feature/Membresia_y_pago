@@ -1,0 +1,46 @@
+# language: es
+Característica: Contratación de membresía
+  Como recepcionista
+  Quiero venderle una membresía a un socio
+  Para que pueda entrar al gimnasio
+
+  Antecedentes:
+    Dado que he iniciado sesión como "Recepcionista"
+
+  Escenario: Venta exitosa con pago aprobado
+    Dado que el socio "Carla Méndez" no tiene membresía activa
+    Y existe el plan "Mensual" de 30 días con precio 200.00
+    Cuando registro la venta del plan "Mensual" con fecha de inicio "2026-10-01"
+    Y el pago de 200.00 es aprobado
+    Entonces la membresía queda en estado "Activa"
+    Y la fecha de fin es "2026-10-31"
+    Y el sistema genera el comprobante de pago
+
+  Escenario: Pago rechazado
+    Dado que el socio "Carla Méndez" no tiene membresía activa
+    Cuando registro la venta del plan "Mensual"
+    Y el pago es rechazado
+    Entonces no se crea ninguna membresía
+    Y el sistema muestra el mensaje "El pago no fue aprobado"
+
+  Escenario: Socio con membresía activa quiere comprar otra
+    Dado que el socio "Carla Méndez" tiene una membresía "Activa"
+    Cuando intento venderle otro plan
+    Entonces el sistema no permite la operación
+    Y sugiere hacer una renovación en su lugar
+
+  Escenario: Un plan inactivo no se puede vender
+    Dado que el plan "Semestral" está "Inactivo"
+    Cuando intento venderlo a un socio
+    Entonces el sistema ni siquiera lo muestra como opción
+
+  Esquema del escenario: Cálculo de la fecha de fin según el plan
+    Dado que el plan "<plan>" tiene una duración de <días> días
+    Cuando se activa la membresía con inicio "2026-01-01"
+    Entonces la fecha de fin es "<fecha_fin>"
+
+    Ejemplos:
+      | plan       | días | fecha_fin  |
+      | Mensual    | 30   | 2026-01-31 |
+      | Trimestral | 90   | 2026-04-01 |
+      | Anual      | 365  | 2027-01-01 |
