@@ -1,0 +1,31 @@
+# language: es
+Característica: Renovación de membresía
+  Como recepcionista
+  Quiero renovar la membresía de un socio
+  Para que no se quede sin acceso
+
+  Antecedentes:
+    Dado que he iniciado sesión como "Recepcionista"
+    Y el período de gracia configurado es de 5 días
+
+  Escenario: Renovación anticipada: no se pierden días
+    Dado que la membresía mensual de un socio vence el "2026-10-10"
+    Cuando se renueva el "2026-10-05" con pago aprobado
+    Entonces la nueva fecha de fin es "2026-11-09"
+
+  Escenario: Renovación dentro del período de gracia
+    Dado que la membresía del socio venció el "2026-10-10"
+    Cuando se renueva el "2026-10-13" con pago aprobado
+    Entonces la nueva vigencia empieza el "2026-10-10"
+    Y la membresía queda en estado "Activa"
+
+  Escenario: Renovación después del período de gracia
+    Dado que la membresía del socio venció el "2026-10-10"
+    Cuando se renueva el "2026-10-20" con pago aprobado
+    Entonces la nueva vigencia empieza el "2026-10-20"
+
+  Escenario: Intento de renovar una membresía cancelada
+    Dado que la membresía del socio está "Cancelada"
+    Cuando intento renovarla
+    Entonces el sistema no permite la operación
+    Y ofrece contratar una membresía nueva
