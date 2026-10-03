@@ -1,0 +1,35 @@
+# language: es
+Característica: Vencimiento de membresías y control de acceso
+  Como gimnasio
+  Quiero controlar quién entra según el estado de su membresía
+  Para que solo entren socios con la membresía al día
+
+  Antecedentes:
+    Dado que el período de gracia configurado es de 5 días
+
+  Escenario: Acceso con membresía activa
+    Dado que un socio tiene una membresía "Activa" con fecha de fin "2026-10-31"
+    Cuando se registra su ingreso el "2026-10-15"
+    Entonces el acceso es permitido
+
+  Escenario: Acceso en período de gracia (con advertencia)
+    Dado que la membresía del socio venció el "2026-10-10"
+    Cuando se registra su ingreso el "2026-10-12"
+    Entonces el acceso es permitido
+    Y se muestra la advertencia "Su membresía venció. Renuévela pronto"
+
+  Escenario: Acceso denegado pasada la gracia
+    Dado que la membresía del socio venció el "2026-10-10"
+    Cuando se registra su ingreso el "2026-10-16"
+    Entonces el acceso es denegado
+    Y se muestra el mensaje "Membresía vencida"
+
+  Escenario: Actualización automática de estados
+    Dado que hay membresías "Activas" con fecha de fin anterior a hoy
+    Cuando corre el proceso diario de vencimientos
+    Entonces esas membresías pasan a estado "Vencida"
+
+  Escenario: Aviso antes del vencimiento
+    Dado que a un socio le faltan 5 días para que venza su membresía
+    Cuando corre el proceso diario de notificaciones
+    Entonces el socio recibe un correo con la fecha de vencimiento
