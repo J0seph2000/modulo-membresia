@@ -1,0 +1,30 @@
+# language: es
+Característica: Cancelación de membresía
+  Como recepcionista
+  Quiero cancelar la membresía de un socio
+  Para atender las solicitudes de baja
+
+  Antecedentes:
+    Dado que he iniciado sesión como "Recepcionista"
+
+  Escenario: Cancelación con reembolso (dentro de los 3 días)
+    Dado que el socio compró su membresía hace 2 días por 200.00
+    Cuando cancelo la membresía con el motivo "Cambio de domicilio" y confirmo
+    Entonces la membresía queda en estado "Cancelada"
+    Y se genera un reembolso de 200.00
+
+  Escenario: Cancelación sin reembolso (fuera de plazo)
+    Dado que el socio compró su membresía hace 10 días
+    Cuando cancelo la membresía y confirmo
+    Entonces la membresía queda en estado "Cancelada"
+    Y no se genera reembolso
+
+  Escenario: Cancelación sin motivo
+    Cuando intento cancelar una membresía sin escribir el motivo
+    Entonces el sistema no procesa la cancelación
+    Y pide que se indique el motivo
+
+  Escenario: Sin acceso después de cancelar
+    Dado que la membresía del socio está "Cancelada"
+    Cuando el socio intenta entrar al gimnasio
+    Entonces el acceso es denegado
