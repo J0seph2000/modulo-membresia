@@ -1,0 +1,40 @@
+# language: es
+Característica: Congelamiento de membresía
+  Como recepcionista
+  Quiero congelar una membresía por un tiempo
+  Para que el socio no pierda los días que ya pagó cuando se ausenta
+
+  Antecedentes:
+    Dado que he iniciado sesión como "Recepcionista"
+
+  Escenario: Congelamiento exitoso
+    Dado que un socio tiene una membresía "Trimestral" "Activa" que vence el "2026-12-31"
+    Y no ha usado días de congelamiento este año
+    Cuando congelo la membresía por 15 días con el motivo "Viaje"
+    Entonces el estado de la membresía es "Congelada"
+    Y la fecha de fin se extiende al "2027-01-15"
+    Y se guardan el motivo y el usuario que lo autorizó
+
+  Escenario: El plan Mensual no se puede congelar
+    Dado que un socio tiene una membresía "Mensual" "Activa"
+    Cuando intento congelarla
+    Entonces el sistema no permite la operación
+    Y muestra el mensaje "Este plan no se puede congelar"
+
+  Escenario: Se pasa del máximo de días permitidos
+    Dado que el socio ya usó 20 días de congelamiento este año
+    Cuando intento congelar la membresía por 15 días
+    Entonces el sistema no permite la operación
+    Y avisa que solo le quedan 10 días disponibles
+
+  Escenario: Sin acceso mientras está congelada
+    Dado que la membresía del socio está "Congelada"
+    Cuando el socio intenta entrar al gimnasio
+    Entonces el acceso es denegado
+    Y se muestra el mensaje "Membresía congelada"
+
+  Escenario: Descongelar antes de tiempo
+    Dado que la membresía se congeló por 15 días y han pasado 5
+    Cuando la descongelo a mano
+    Entonces el estado vuelve a "Activa"
+    Y la fecha de fin solo se corre los 5 días que estuvo congelada
