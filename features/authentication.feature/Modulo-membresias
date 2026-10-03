@@ -1,1 +1,55 @@
 
+# Módulo de gestión de membresías de un gimnasio
+## Criterios de aceptación y especificaciones BDD (Gherkin)
+
+### Supuestos de partida (hay que ajustarlos al negocio)
+* Hay tres planes: Mensual, Trimestral y Anual.
+* Una membresía puede estar **Activa**, **Congelada**, **Vencida** o **Cancelada**.
+* Un socio no puede tener dos membresías activas al mismo tiempo.
+* Se puede congelar hasta 30 días por año de membresía, pero solo en los planes Trimestral y Anual.
+* Después del vencimiento hay 5 días de gracia; pasados esos días se bloquea el acceso.
+* Cancelar no da derecho a reembolso, excepto si se hace dentro de los primeros 3 días desde la compra.
+
+---
+
+## 1. Registro de socios
+
+### Criterios de aceptación
+* **CA1:** Nombre, documento de identidad, correo, teléfono y fecha de nacimiento son obligatorios.
+* **CA2:** No se puede repetir ni el documento ni el correo.
+* **CA3:** Si el socio es menor de 18 años, hay que registrar también los datos de un tutor.
+* **CA4:** Al registrarse, el socio todavía no tiene ninguna membresía activa.
+
+### Especificación Gherkin
+```gherkin
+# language: es
+Característica: Registro de socios
+  Como recepcionista
+  Quiero dar de alta a nuevos socios
+  Para poder asignarles una membresía
+
+  Antecedentes:
+    Dado que he iniciado sesión como "Recepcionista"
+
+  Escenario: Registro exitoso de un socio adulto
+    Cuando registro un socio con estos datos:
+      | nombre       | documento  | correo           | teléfono | fecha_nacimiento |
+      | Carla Méndez | 2987451230 | carla@correo.com | 47821590 | 1995-04-12       |
+    Entonces el sistema crea al socio con un identificador único
+    Y el socio queda sin membresía activa
+
+  Escenario: Documento ya registrado
+    Dado que ya hay un socio registrado con el documento "2987451230"
+    Cuando intento registrar a otra persona con el documento "2987451230"
+    Entonces el sistema no permite el registro
+    Y muestra el mensaje "Este documento ya está registrado"
+
+  Escenario: Falta un dato obligatorio
+    Cuando intento registrar un socio sin correo
+    Entonces el sistema no guarda nada
+    Y avisa que el campo "correo" es obligatorio
+
+  Escenario: Menor de edad sin tutor
+    Cuando intento registrar a un socio de 16 años sin datos de tutor
+    Entonces el sistema no permite el registro
+    Y pide los datos del tutor legal
