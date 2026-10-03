@@ -1,0 +1,23 @@
+# language: es
+Característica: Gestión de planes de membresía
+  Como administrador
+  Quiero configurar los planes disponibles
+  Para tener opciones que ofrecerle a los socios
+
+  Antecedentes:
+    Dado que he iniciado sesión como "Administrador"
+
+  Escenario: Crear un plan nuevo
+    Cuando creo un plan llamado "Trimestral" de 90 días con precio 450.00
+    Entonces el plan queda disponible con estado "Activo"
+
+  Escenario: Desactivar un plan
+    Dado que existe el plan "Mensual" en estado "Activo"
+    Cuando desactivo el plan "Mensual"
+    Entonces el plan deja de aparecer entre las opciones de venta
+
+  Escenario: Un cambio de precio no afecta las membresías vigentes
+    Dado que un socio compró el plan "Mensual" a 200.00
+    Cuando el administrador sube el precio del plan "Mensual" a 250.00
+    Entonces la membresía de ese socio sigue con el precio de 200.00
+    Y las ventas nuevas usan el precio de 250.00
